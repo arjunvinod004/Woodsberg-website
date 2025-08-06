@@ -970,6 +970,9 @@ public function addusercheckout()
   
             }
 
+$cartitems = $this->Cartmodel->cartitems($token);
+
+
             
 if ($order_type == 'rt') {
 
@@ -980,6 +983,7 @@ $query = http_build_query([
     'cust_name' => $customer_name,
     'cust_phone' => $customer_phone,
     'cust_email' => $customer_email,
+    
 ]);
 
 $checkout_url = base_url("Payment/index.php?".$query);
@@ -987,6 +991,8 @@ echo json_encode([
     'success' => 'success',
     'message' => 'Order placed',
     'redirect_url' => $checkout_url,
+    'cartitems' => $cartitems
+    
     // 'query' => $query,
 ]); 
     return;
@@ -1046,40 +1052,16 @@ echo json_encode([
 $order_type = $this->session->userdata('order-type');
 $this->load->helper('cookie'); // ✅ Load cookie helper
 $token = $this->input->cookie('guest_token');
-// echo $token; exit;
 //✅ Update status
 $order_id = $this->input->post('order_id');
 $status = $this->input->post('status');
-
-   // log_message('debug', 'Raw Payment Gateway Response: ' . $status);
-
     // Split the response using '|'
     $parts = explode('|', $status);
-
     // Extract necessary fields
     $txn_status = strtolower(trim($parts[1] ?? ''));  // e.g., 'success', 'user aborted'
-                  // This is actual order_id
-
-    // Optional: log each part for debugging
-    // log_message('debug', 'Txn status: ' . $txn_status);
-    // log_message('debug', 'Order ID: ' . $order_id);
-
     if ($txn_status === 'success' && $order_id) {
         $this->Homemodel->updatePaymentStatus($order_id);
     } 
-    //echo $order_id; // Return the transaction status to the frontend
-
-    // ✅ Cleanup
-    $this->session->unset_userdata('order-type');
-    $this->db->where('guest_token', $token)->delete('cart');
-    $this->db->where('guest_token', $token)->delete('wishlist');
-    delete_cookie('guest_token');
-
-    // ✅ Redirect to homepage (can change based on $order_type)
-    redirect('home/index');
-
-    
-
 }  
 
 public function clearPaymentSession(){

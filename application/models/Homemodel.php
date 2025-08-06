@@ -19,7 +19,11 @@ class Homemodel extends CI_Model {
     $this->db->where('order_no', $order_id);  // 🔴 Add this line
     $this->db->set('is_paid', 1);
     $this->db->set('payment_status', 'success');
-        return $this->db->update('orders');
+    $this->db->update('orders');
+    
+    $this->db->where('order_no', $order_id);
+    $this->db->set('is_paid', 1);
+    $this->db->update('order_items');
     }
  
     // public function getcurrentstock($product_id) {

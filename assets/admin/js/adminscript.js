@@ -2985,7 +2985,23 @@ $(document).ready(function () {
                     $('.alert-success').text(response.message);
                     $('.alert-danger').addClass('d-none');
                     if (response.redirect_url) {
-            window.location.href = response.redirect_url;
+             const form = $('<form>', {
+            action: response.redirect_url,
+            method: 'POST'
+        });
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'cartitems',
+            value: JSON.stringify(response.cartitems)
+        }));
+
+        $('body').append(form);
+        form[0].submit();
+        console.log('cartitems:', response.cartitems);
+        
+    
+            // window.location.href = response.redirect_url;
         } else
         {
   if (response.ordertype == 'rt') {

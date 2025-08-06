@@ -36,9 +36,27 @@ $customer_email = $_GET['cust_email'] ?? '';
 
     $admin_data = file_get_contents("./worldline_AdminData.json");
     $mer_array = json_decode($admin_data, true);
+     
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo '<pre>';
+    // print_r($_POST);
+    
+    if (isset($_POST['cartitems'])) {
+        $cartItems = json_decode($_POST['cartitems'], true);
+        // echo "\n\nDecoded cartitems:\n";
+        // print_r($cartItems);
+    } else {
+        echo "cartitems not found in POST data.";
+    }
+    echo '</pre>';
+    // exit;
+}
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['msg'])) {
-
+        // print_r($_POST);
+        //  $cartItems = json_decode($_POST['cartitems'], true);
+        //     print_r($cartItems); exit;
+           
 //        if (!isset($_POST['order_id']) && $order_id !== '') {
 //     echo "
 //     <form id='autoForm' method='POST' action=''>
@@ -98,7 +116,6 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-
 echo $response;
 
 
@@ -350,7 +367,7 @@ echo $response;
 
 
     <!-- <tr>
-        <td><a href='<?php echo $host."://".$_SERVER["HTTP_HOST"].$_SERVER['SCRIPT_NAME']; ?>'>BACK TO PAYMENT
+        <td><a href='<?php echo $host."://".$_SERVER["HTTP_HOST"].$_SERVER['SCRIPT_NAME'];?>'>BACK TO PAYMENT
                 PAGE</a><br></td>
         <td><a href='<?php echo $host."://".$_SERVER["HTTP_HOST"]."/php-checkoutjs/offline_verification.php"; ?>'
                 target=" _blank">GO TO OFFLINE-VERIFICATION</a></td>
@@ -416,7 +433,7 @@ echo $response;
     <div class="container">
         <div class="row">
 
-            <div class="col-md-12 mt-4 ">
+            <div class="col-md-6 mt-4 ">
 
                 <h2 class="text-center">Payment Details</h2>
                 <form method="post" id="form">
@@ -425,13 +442,13 @@ echo $response;
                             <th width="40%">Field Name</th>
                             <th width="60%">Field Value</th>
                         </tr>
-                        <tr>
+                        <tr class="hid">
                             <td><label>Merchant ID</label></td>
                             <td><input type="text" name="mrctCode" class="form-control"
                                     value="<?php if(isset($mer_array['merchantCode'])){echo $mer_array['merchantCode'];} ?>" />
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="hid">
                             <td><label>Transaction ID</label></td>
                             <td><input type="text" class="form-control" name="txn_id" value="<?php echo $strNo; ?>" />
                             </td>
@@ -448,7 +465,7 @@ echo $response;
                                     value="<?php if(isset($mer_array['merchantSchemeCode'])){echo $mer_array['merchantSchemeCode'];} ?>" />
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="hid">
                             <td><label>Consumer ID</label></td>
                             <td><input type="text" name="custID" class="form-control"
                                     value=" <?php echo 'c'.$strNo1; ?>" /></td>
@@ -460,7 +477,7 @@ echo $response;
                             </td>
                         </tr>
 
-                        <tr>
+                        <tr class="hid">
                             <td><label>Customer ID</label></td>
                             <td><input type="text" class="form-control" name="customerID"
                                     value="<?php echo $customer_id ?>" /></td>
@@ -614,7 +631,7 @@ $returnUrl = $host . "://" . $_SERVER["HTTP_HOST"] . $_SERVER['SCRIPT_NAME'] . "
                             <td><label>Cvv Code</label></td>
                             <td><input type="text" name="cvvCode" value="" /></td>
                         </tr>
-                        <tr>
+                        <tr class="text-center">
                             <td colspan=2>
                                 <input class="btn btn-danger" id="btnSubmit" type="submit" name="submit"
                                     value="Make Payment" />
@@ -623,11 +640,108 @@ $returnUrl = $host . "://" . $_SERVER["HTTP_HOST"] . $_SERVER['SCRIPT_NAME'] . "
                     </table>
                 </form>
                 <div id="worldline_embeded_popup"></div>
+
             </div>
 
+            <div class="col-md-6">
+                <div class="container">
 
+                    <div class="row">
+
+                        <!-- product table -->
+                        <div class="col-lg-12 col-md-12 " style="margin-top:70px;">
+                            <div class=" table-responsive">
+                                <table class="table table-bordered align-middle text-center">
+                                    <thead>
+                                        <tr>
+                                            <!-- Image Column (Desktop only) -->
+                                            <!-- d-block d-md-none -->
+                                            <th scope="col" class="d-block d-md-none">Image</th>
+
+                                            <!-- Product Column (Mobile only) -->
+                                            <th scope="col" class="d-none d-md-table-cell">Product</th>
+
+
+                                            <!-- Name Column (Desktop only) -->
+                                            <th scope="col" class="d-none d-md-table-cell">Name</th>
+
+                                            <th scope="col">Price</th>
+
+                                            <th scope="col">subtotal</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($cartItems as $item): ?>
+                                        <tr>
+                                            <!-- Product Image -->
+                                            <td class="d-table-cell align-middle">
+                                                <a href="#!">
+                                                    <img src="http://localhost/codeigniter/woodsberg-website/uploads/product/<?php echo $item['image']; ?>"
+                                                        alt="<?php echo htmlspecialchars($item['name']); ?>"
+                                                        class="img-fluid w-100px d-block" width="100px" height="100px">
+                                                </a>
+
+                                                <!-- Product Name (mobile) -->
+                                                <div class="d-block d-md-none mt-2 text-center"
+                                                    style="font-size: 10px;">
+                                                    <?php echo htmlspecialchars($item['name']); ?>
+                                                </div>
+                                            </td>
+
+                                            <!-- Product Name (desktop) -->
+                                            <td class="d-none d-md-table-cell align-middle">
+                                                <?php echo htmlspecialchars($item['name']); ?>
+                                            </td>
+
+                                            <!-- Product Price -->
+                                            <td class="price-carts" data-price="<?php echo $item['product_price']; ?>">
+                                                RS <?php echo $item['product_price']; ?>
+                                            </td>
+
+                                            <!-- Quantity Controls -->
+                                            <td class="qty-area d-none">
+                                                <input type="hidden" id="cart_product_id"
+                                                    value="<?php echo $item['product_id']; ?>">
+                                                <input type="hidden" id="quantity"
+                                                    value="<?php echo $item['quantity']; ?>" class="qty-input">
+                                                <input type="hidden" class="qty-price"
+                                                    value="<?php echo $item['price']; ?>">
+                                                <input type="hidden" id="product_price"
+                                                    value="<?php echo $item['product_price']; ?>">
+                                                <input type="hidden" id="product_token"
+                                                    value="<?php echo $item['guest_token']; ?>">
+                                                <input type="hidden" id="weight-calculation"
+                                                    value="<?php echo $item['default_weight']; ?>">
+                                                <input type="hidden" value="<?php echo $item['full_weight']; ?>">
+                                                <input type="hidden" value="rt" class="ordertype">
+                                            </td>
+
+                                            <!-- Subtotal -->
+                                            <td class="d-md-table-cell price-cart"
+                                                data-price="<?php echo $item['price']; ?>">
+                                                RS <?php echo $item['price']; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- end product table -->
+
+
+
+                    </div>
+
+                </div>
+            </div>
 
         </div>
+
+
         <?php 
 if($mer_array['enableEmandate'] == 1){
 ?>
