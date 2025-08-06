@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <!-- metas -->
-    <meta charset="utf-8" />
-    <meta name="author" content="Chitrakoot Web" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="keywords" content="Woodsberg - lorem ipsum" />
-    <meta name="description" content="Woodsberg - lorem ipsum" />
-
-    <!-- title  -->
-    <title>Woodsberg</title>
-
-</head>
-
 <body>
     <!-- PAGE LOADING
     ================================================== -->
@@ -170,62 +153,61 @@ echo '<div class="service-box">'; for ($j = $i; $j < $i + 2 && $j <
                 </div>
                 <div class="owl-carousel owl-theme" id="featured-product-carousel">
                     <?php
-for ($i = 0; $i < count($home); $i += 2) {
-    echo '<div class="service-box product-item ">';
-    
-    for ($j = $i; $j < $i + 2 && $j < count($home); $j++) {
-        $product = $home[$j];
+                    for ($i = 0; $i < count($home); $i += 2) {
+                        echo '<div class="service-box product-item ">';
+                        for ($j = $i; $j < $i + 2 && $j < count($home); $j++) 
+                        {
+                            $product = $home[$j];
 
-        // Set dynamic price
-        if ($ordertype == 'ws') {
-            $price = $product['wholesale_price'];
-        } elseif ($ordertype == 'rt') {
-            $price = $product['retail_price'];
-        } elseif ($ordertype == 'bb') {
-            $price = $product['franchise_price'];
-        }
+                            // Set dynamic price
+                            if ($ordertype == 'ws') 
+                            {
+                                $price = $product['wholesale_price'];
+                            } 
+                            elseif ($ordertype == 'rt') 
+                            {
+                                $price = $product['retail_price'];
+                            } 
+                            elseif ($ordertype == 'bb') 
+                            {
+                                $price = $product['franchise_price'];
+                            }
 
-        $final_price = $price;
-      $seasonal_percentage = '';
-    if ($ordertype == 'rt' && !empty($product['seasonal_percentage'])) {
-    $seasonal_percentage = $product['seasonal_percentage'];
-    $discount = ($price * $seasonal_percentage) / 100;
-    $final_price = $price - $discount;
-    
-}
-
-
-
-                    // $seasonal_percentage = $product['seasonal_percentage'];
-                    // $final_price = $price;
-
-                    // if ($seasonal_percentage) {
-                    // $discount = ($price * $seasonal_percentage) / 100;
-                    // $final_price = $price - $discount;
-                    // }
-
-                    // Get quantity from cart
-                    $quantity = 1;
-                    foreach ($cart as $item) {
-                    if ($item['product_id'] == $product['product_id']) {
-                    $quantity = $item['quantity'];
-                    break;
-                    }
-                    }
-                    ?>
+                            $final_price = $price;
+                            $seasonal_percentage = '';
+                            if ($ordertype == 'rt' && !empty($product['seasonal_percentage'])) 
+                            {
+                                $seasonal_percentage = $product['seasonal_percentage'];
+                                $discount = ($price * $seasonal_percentage) / 100;
+                                $final_price = $price - $discount;
+                            }
+                    
+                            // Get quantity from cart
+                            $quantity = 1;
+                            foreach ($cart as $item) 
+                            {
+                                if ($item['product_id'] == $product['product_id'])
+                                {
+                                    $quantity = $item['quantity'];
+                                    break;
+                                }
+                            }
+                            ?>
 
 
                     <div class="project-grid-style2">
                         <div class="project-details card-img">
                             <?php
-  $isBestseller = false;
-  foreach ($bestseller as $bs) {
-    if ($bs['product_id'] == $product['product_id']) {
-      $isBestseller = true;
-      break;
-    }
-  }
-?>
+                            $isBestseller = false;
+                            foreach ($bestseller as $bs) 
+                            {
+                                if ($bs['product_id'] == $product['product_id']) 
+                                {
+                                    $isBestseller = true;
+                                    break;
+                                }
+                            }
+                            ?>
                             <a href="<?php echo base_url('details/' . $product['product_id']); ?>">
                                 <?php if ($isBestseller): ?>
                                 <div class="label-offer bg-primary">Best Seller</div>
@@ -259,12 +241,9 @@ for ($i = 0; $i < count($home); $i += 2) {
 
                             <div class="d-flex align-items-center  px-2 qty-area justify-content-center">
                                 <button class="btn btn-sm p-1 decrement-btn"
-                                    data-product-id="<?= $product['product_id']; ?>">
-                                    −
-                                </button>
+                                    data-product-id="<?= $product['product_id']; ?>">−</button>
                                 <span data-qty><?= $quantity ?></span>
-                                <button class="btn btn-sm p-1 increment-btn"
-                                    data-product-id="<?= $product['product_id']; ?>">
+                                <button class="btn btn-sm p-1 increment-btn" data-product-id="<?= $product['product_id']; ?>">
                                     +
                                 </button>
                             </div>
@@ -318,6 +297,7 @@ for ($i = 0; $i < count($home); $i += 2) {
 
         <!--Best seller Products
         ================================================== -->
+        <?php if (!empty($bestseller)) { ?>
         <section class="md section-border">
             <div class="container">
                 <div class="section-heading">
@@ -412,18 +392,7 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
                                         value="<?= isset($final_price) ? $final_price : $price; ?>" class="qty-price" />
                                     <input type="hidden" id="product_price"
                                         value="<?= isset($final_price) ? $final_price : $price; ?>" />
-                                    <!-- <input
-                      type="hidden"
-                      id="price"
-                      value="<?=  $price; ?>"
-                      class="qty-price"
-                    />
-                    <input
-                      type="hidden"
-                      id="product_price"
-                      value="<?=  $price; ?>"
-                    /> -->
-                                    <!-- <input type="hidden" id="product_stock" value="<?= $product['stock']; ?>"> -->
+
                                     <input type="hidden" id="product_weight" value="<?= $product['weight']; ?>" />
                                     <input type="hidden" id="product_kg_g" value="<?= $product['kg_g']; ?>" />
                                     <div class="d-flex justify-content-center gap-2 mt-2 product">
@@ -438,9 +407,7 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
                                             <i class="fas fa-shopping-cart"></i> Add to Cart
                                         </button>
                                         <?php endif; ?>
-                                        <!-- <button type="submit" class="btn btn-sm d-flex align-items-center gap-1">
-      <i class="fas fa-shopping-cart"></i> Add to Cart
-    </button> -->
+                                        
                                         <button type="button" class="btn btn-sm d-flex align-items-center gap-1"
                                             id="wishlist_button">
                                             <i class="fas fa-heart"></i> Wishlist
@@ -454,10 +421,12 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
                 </div>
             </div>
         </section>
+        <?php } ?>
         <!--Best seller Products-->
 
         <!--Offer Products
         ================================================== -->
+        <?php if (!empty($seasonaloffer)) { ?>
         <section class="md section-border">
             <div class="container">
                 <div class="section-heading">
@@ -485,16 +454,6 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
     $discount = ($price * $seasonal_percentage) / 100;
     $final_price = $price - $discount;
 }
-
-
-
-// $seasonal_percentage = $product['seasonal_percentage'];
-// $final_price = $price;
-
-// if ($seasonal_percentage) {
-//     $discount = ($price * $seasonal_percentage) / 100;
-//     $final_price = $price - $discount;
-// }
                            ?>
 
                     <div class="service-box"
@@ -574,9 +533,7 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
                                             Add to Cart
                                         </button>
                                         <?php endif; ?>
-                                        <!-- <button type="submit" class="btn btn-sm d-flex align-items-center gap-1">
-                             <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button> -->
+                                        
                                         <button type="button" class="btn btn-sm d-flex align-items-center gap-1"
                                             id="wishlist_button">
                                             <i class="fas fa-heart"></i> Wishlist
@@ -590,6 +547,7 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
                 </div>
             </div>
         </section>
+        <?php } ?>
         <!--Offer Products-->
 
         <!-- TESTIMONIAL
@@ -640,41 +598,20 @@ if ($ordertype == 'rt' && !empty($product['seasonal_percentage']))
 <!-- modal for out of stock -->
 
 <div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
     <div class="modal-dialog modal-md" style="margin-top:88px">
-
         <div class="modal-content">
-
             <div class="modal-header">
-
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Out of Stock</h1>
-
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
             </div>
-
             <div class="modal-body">
-
                 <!-- if response within jquery -->
-
-
-
             </div>
-
             <div class="modal-footer">
-
-
-
             </div>
-
-
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 <script>
